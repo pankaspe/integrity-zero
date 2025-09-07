@@ -109,9 +109,20 @@ fn render_network_view(frame: &mut Frame, app: &App, area: Rect) {
             _ => Color::Red,
         };
 
+        let mut status_icons = String::new();
+        for effect in &node.status_effects {
+            let icon = match effect {
+                crate::game::node::StatusEffect::Shield => "[S]",
+                // Aggiungeremo altre icone qui in futuro
+                _ => "[?]",
+            };
+            status_icons.push_str(icon);
+        }
+
         let node_text = vec![
             Line::from(Span::styled(format!("[{}] {}", node.id, node.name), Style::default().bold())),
             Line::from(format!("HP: {}/{}", node.hp, node.max_hp)),
+            Line::from(Span::styled(status_icons, Style::default().fg(Color::Cyan))), // Nuova riga
         ];
 
         let node_paragraph = Paragraph::new(node_text)
