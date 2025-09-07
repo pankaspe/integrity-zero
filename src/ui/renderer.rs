@@ -113,7 +113,7 @@ fn render_network_view(frame: &mut Frame, app: &App, area: Rect) {
         for effect in &node.status_effects {
             let icon = match effect {
                 crate::game::node::StatusEffect::Shield => "[S]",
-                // Aggiungeremo altre icone qui in futuro
+                crate::game::node::StatusEffect::Vulnerability => "[V]",
                 _ => "[?]",
             };
             status_icons.push_str(icon);
@@ -122,7 +122,7 @@ fn render_network_view(frame: &mut Frame, app: &App, area: Rect) {
         let node_text = vec![
             Line::from(Span::styled(format!("[{}] {}", node.id, node.name), Style::default().bold())),
             Line::from(format!("HP: {}/{}", node.hp, node.max_hp)),
-            Line::from(Span::styled(status_icons, Style::default().fg(Color::Cyan))), // Nuova riga
+            Line::from(Span::styled(status_icons, Style::default().fg(Color::Yellow))),
         ];
 
         let node_paragraph = Paragraph::new(node_text)
@@ -150,16 +150,35 @@ fn render_system_log(frame: &mut Frame, app: &App, area: Rect) {
 }
 
 fn render_input_bar(frame: &mut Frame, app: &App, area: Rect) {
+    // Testo completo da mostrare: prompt + testo dell'utente
     let input_text = format!("> {}", app.input_text);
+    
+    // Stile per il bordo giallo che indica il focus
+    let active_border_style = Style::default().fg(Color::Yellow);
+
     let input_paragraph = Paragraph::new(input_text)
-        .block(Block::default().borders(Borders::ALL).title("Input Command"));
+        .block(
+            Block::default()
+                .borders(Borders::ALL)
+                .title("Input Command")
+                .border_style(active_border_style),
+        );
     
     frame.render_widget(input_paragraph, area);
 
-    // Rendiamo visibile il cursore lampeggiante.
-    // La sua posizione è dopo il prompt `> ` e il testo inserito.
-    frame.set_cursor(
-        area.x + 2 + app.input_text.len() as u16,
-        area.y + 1
-    );
+    // Usiamo la nuova API `set_cursor_position` che non è deprecata.
+    // Questa API prende un oggetto `Position` con le coordinate x e y.
+    frame.set_cursor_position(Position::new(
+        // La coordinata X del cursore:
+        // area.x:      inizio del riquadro
+        // + 1:         per superare il bordo sinistro
+        // + 2:         per superare il prompt "> "
+        // + len:       per posizionarsi dopo il testo scritto
+        area.x + 1 + 2 + app.input_text.len() as u16,
+        
+        // La coordinata Y del cursore:
+        // area.y:      inizio del riquadro
+        // + 1:         per superare il bordo superiore
+        area.y + 1,
+    ));
 }
