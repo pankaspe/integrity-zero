@@ -1,4 +1,4 @@
-# Integrity Zero
+# Integrity Zero RS
 
 ![alt text](image.png)
 
@@ -8,7 +8,7 @@ Built with Rust and the [`ratatui`](https://ratatui.rs/) library, this project i
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Rust Version](https://img.shields.io/badge/rust-2024-orange.svg)](https://www.rust-lang.org/)
-[![Under Development](https://img.shields.io/badge/status-in%20development-brightgreen.svg)]
+[![Under Development](https://img.shields.io/badge/status-in%20development-brightgreen.svg)]()
 
 ---
 
