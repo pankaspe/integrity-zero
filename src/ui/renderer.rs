@@ -112,8 +112,8 @@ fn render_network_view(frame: &mut Frame, app: &App, area: Rect) {
         let mut status_icons = String::new();
         for effect in &node.status_effects {
             let icon = match effect {
-                crate::game::node::StatusEffect::Shield => "[S]",
-                crate::game::node::StatusEffect::Vulnerability => "[V]",
+                crate::game::node::StatusEffect::Shield => "🛡️ ",
+                crate::game::node::StatusEffect::Vulnerability => "☠️ ",
                 _ => "[?]",
             };
             status_icons.push_str(icon);
@@ -122,7 +122,7 @@ fn render_network_view(frame: &mut Frame, app: &App, area: Rect) {
         let node_text = vec![
             Line::from(Span::styled(format!("[{}] {}", node.id, node.name), Style::default().bold())),
             Line::from(format!("HP: {}/{}", node.hp, node.max_hp)),
-            Line::from(Span::styled(status_icons, Style::default().fg(Color::Yellow))),
+            Line::from(Span::styled(status_icons, Style::default().fg(Color::White))),
         ];
 
         let node_paragraph = Paragraph::new(node_text)
@@ -138,12 +138,9 @@ fn render_network_view(frame: &mut Frame, app: &App, area: Rect) {
 }
 
 fn render_system_log(frame: &mut Frame, app: &App, area: Rect) {
-    // Convertiamo la nostra Vec<String> in una Vec<Line> che Paragraph può usare.
-    let log_lines: Vec<Line> = app.system_log.iter().map(|s| Line::from(s.clone())).collect();
-    
-    let log_paragraph = Paragraph::new(log_lines)
+    // Ora possiamo passare direttamente `app.system_log` perché è già del tipo giusto.
+    let log_paragraph = Paragraph::new(app.system_log.clone())
         .block(Block::default().borders(Borders::ALL).title("System Log"))
-        // Permette al testo di andare a capo se è più lungo della larghezza del blocco.
         .wrap(ratatui::widgets::Wrap { trim: false });
 
     frame.render_widget(log_paragraph, area);
